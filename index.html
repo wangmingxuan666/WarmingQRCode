@@ -3,60 +3,214 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>网址二维码生成器</title>
-    <meta name="description" content="输入任意合法网址，快速生成可扫码跳转的二维码。" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <title>Warming QR | 网址二维码生成器</title>
+    <meta name="description" content="输入网址，生成可扫码跳转的二维码，支持样式自定义、下载、复制和历史记录。" />
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
     <div class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="./" aria-label="Warming QR 首页">
+          <span class="brand-mark">WQ</span>
+          <span>
+            <strong>Warming QR</strong>
+            <small>网址二维码工作台</small>
+          </span>
+        </a>
+        <div class="topbar-actions" aria-label="产品状态">
+          <span class="status-pill">本地生成</span>
+          <span class="status-pill">PNG 导出</span>
+        </div>
+      </header>
+
       <main class="app">
-        <section class="hero">
-          <div class="hero-copy">
-            <p class="eyebrow">QR Link Generator</p>
-            <h1>网址二维码生成器</h1>
-            <p class="subtitle">输入任意合法网址，立即生成可扫码访问的二维码。适合分享网页、活动链接、产品页与个人主页。</p>
+        <section class="intro">
+          <div>
+            <p class="eyebrow">QR Link Studio</p>
+            <h1>把任意网址做成可分享的专业二维码</h1>
+            <p class="subtitle">
+              适合活动落地页、个人主页、产品链接和线下物料。输入链接后即可生成二维码，支持颜色、尺寸、容错级别、下载和最近记录。
+            </p>
+          </div>
+          <div class="trust-strip" aria-label="产品能力">
+            <div>
+              <strong>0</strong>
+              <span>服务器上传</span>
+            </div>
+            <div>
+              <strong>8</strong>
+              <span>条最近记录</span>
+            </div>
+            <div>
+              <strong>H</strong>
+              <span>最高容错</span>
+            </div>
           </div>
         </section>
-        <section class="workspace" aria-label="二维码生成区域">
-          <div class="panel form-panel">
-            <label class="field-label" for="urlInput">网址链接</label>
-            <div class="input-group">
-              <input id="urlInput" name="url" type="url" inputmode="url" autocomplete="off" placeholder="请输入完整网址，例如 https://www.baidu.com" aria-describedby="helperText statusText" />
-              <button id="generateBtn" type="button">生成二维码</button>
+
+        <section class="workspace" aria-label="二维码生成工作区">
+          <form class="panel builder-panel" id="generatorForm" aria-label="生成设置">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">Create</p>
+                <h2>生成设置</h2>
+              </div>
+              <button id="resetStyleBtn" class="text-btn" type="button">恢复默认</button>
             </div>
-            <p id="helperText" class="helper-text">支持常见的 http / https 链接，建议输入完整网址。</p>
-            <p id="statusText" class="status-text" role="status" aria-live="polite"></p>
+
+            <div class="field-stack">
+              <label class="field-label" for="urlInput">网址链接</label>
+              <div class="input-row">
+                <input
+                  id="urlInput"
+                  name="url"
+                  type="url"
+                  inputmode="url"
+                  autocomplete="off"
+                  placeholder="https://www.baidu.com"
+                  aria-describedby="helperText statusText"
+                />
+                <button id="generateBtn" class="primary-btn" type="submit">生成二维码</button>
+              </div>
+              <p id="helperText" class="helper-text">支持 http、https、域名、IP 和 localhost。未填写协议时会自动补全 https。</p>
+              <p id="statusText" class="status-text" role="status" aria-live="polite"></p>
+            </div>
+
+            <div class="field-stack">
+              <label class="field-label" for="titleInput">二维码名称</label>
+              <input id="titleInput" class="text-input" type="text" maxlength="48" placeholder="例如：官网首页、活动报名页" />
+            </div>
+
             <div class="quick-actions" aria-label="快捷示例">
-              <button class="chip" type="button" data-url="https://www.baidu.com">百度</button>
-              <button class="chip" type="button" data-url="https://www.qq.com">QQ</button>
-              <button class="chip" type="button" data-url="https://github.com">GitHub</button>
+              <button class="chip" type="button" data-url="https://www.baidu.com" data-title="百度">百度</button>
+              <button class="chip" type="button" data-url="https://github.com" data-title="GitHub">GitHub</button>
+              <button class="chip" type="button" data-url="https://www.apple.com.cn" data-title="Apple 中国">Apple</button>
+              <button class="chip" type="button" data-url="https://www.microsoft.com/zh-cn" data-title="Microsoft 中国">Microsoft</button>
             </div>
-          </div>
-          <div class="panel preview-panel">
-            <div class="preview-header">
-              <h2>二维码预览</h2>
-              <button id="downloadBtn" class="ghost-btn" type="button" disabled>下载 PNG</button>
-            </div>
-            <div class="preview-card">
-              <div id="qrFrame" class="qr-frame empty">
-                <div id="qrContainer"></div>
-                <div id="emptyState" class="empty-state">
-                  <p>生成后会在这里显示二维码</p>
-                  <span>扫码即可直接打开对应网址</span>
+
+            <div class="settings-grid">
+              <div class="setting-block">
+                <div class="setting-title">
+                  <label for="sizeRange">导出尺寸</label>
+                  <span id="sizeValue">320 px</span>
+                </div>
+                <input id="sizeRange" class="range-input" type="range" min="180" max="520" step="20" value="320" />
+              </div>
+
+              <div class="setting-block">
+                <div class="setting-title">
+                  <span>容错级别</span>
+                  <span id="levelHint">高</span>
+                </div>
+                <div class="segmented" role="radiogroup" aria-label="容错级别">
+                  <label><input type="radio" name="ecLevel" value="L" /> <span>L</span></label>
+                  <label><input type="radio" name="ecLevel" value="M" /> <span>M</span></label>
+                  <label><input type="radio" name="ecLevel" value="Q" /> <span>Q</span></label>
+                  <label><input type="radio" name="ecLevel" value="H" checked /> <span>H</span></label>
                 </div>
               </div>
-              <div class="result-meta">
+
+              <div class="setting-block color-block">
+                <label class="setting-title" for="fgColor">前景色</label>
+                <div class="color-row">
+                  <input id="fgColor" type="color" value="#111827" aria-label="二维码前景色" />
+                  <span id="fgValue">#111827</span>
+                </div>
+              </div>
+
+              <div class="setting-block color-block">
+                <label class="setting-title" for="bgColor">背景色</label>
+                <div class="color-row">
+                  <input id="bgColor" type="color" value="#ffffff" aria-label="二维码背景色" />
+                  <span id="bgValue">#ffffff</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="preset-row" aria-label="配色预设">
+              <button class="swatch" type="button" data-fg="#111827" data-bg="#ffffff" style="--fg: #111827; --bgc: #ffffff"><span></span>经典</button>
+              <button class="swatch" type="button" data-fg="#0f766e" data-bg="#ecfeff" style="--fg: #0f766e; --bgc: #ecfeff"><span></span>青绿</button>
+              <button class="swatch" type="button" data-fg="#7c2d12" data-bg="#fff7ed" style="--fg: #7c2d12; --bgc: #fff7ed"><span></span>暖橙</button>
+              <button class="swatch" type="button" data-fg="#1d4ed8" data-bg="#eff6ff" style="--fg: #1d4ed8; --bgc: #eff6ff"><span></span>蓝白</button>
+            </div>
+
+            <label class="check-row">
+              <input id="showLabel" type="checkbox" checked />
+              <span>下载图片时在二维码下方显示名称或域名</span>
+            </label>
+          </form>
+
+          <section class="panel preview-panel" aria-label="二维码预览与导出">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">Preview</p>
+                <h2>二维码预览</h2>
+              </div>
+              <span id="qrStateBadge" class="qr-state">待生成</span>
+            </div>
+
+            <div class="qr-frame empty" id="qrFrame">
+              <div id="qrContainer" aria-label="生成的二维码"></div>
+              <p id="qrCaption" class="qr-caption"></p>
+              <div id="emptyState" class="empty-state">
+                <strong>二维码会显示在这里</strong>
+                <span>生成后可扫码、下载或复制图片</span>
+              </div>
+            </div>
+
+            <div class="action-grid">
+              <button id="downloadBtn" class="secondary-btn" type="button" disabled>下载 PNG</button>
+              <button id="copyImageBtn" class="secondary-btn" type="button" disabled>复制图片</button>
+              <button id="copyLinkBtn" class="secondary-btn" type="button" disabled>复制链接</button>
+              <button id="shareBtn" class="secondary-btn" type="button" disabled>分享</button>
+            </div>
+
+            <div class="result-panel">
+              <div>
                 <p class="meta-label">当前目标链接</p>
                 <a id="resultLink" class="result-link muted" href="#" target="_blank" rel="noreferrer noopener">暂未生成</a>
               </div>
+              <button id="openTargetBtn" class="text-btn" type="button" disabled>打开目标</button>
             </div>
+
+            <dl class="meta-grid">
+              <div>
+                <dt>域名</dt>
+                <dd id="domainText">-</dd>
+              </div>
+              <div>
+                <dt>协议</dt>
+                <dd id="protocolText">-</dd>
+              </div>
+              <div>
+                <dt>尺寸</dt>
+                <dd id="qrSizeMeta">-</dd>
+              </div>
+              <div>
+                <dt>容错</dt>
+                <dd id="levelMeta">-</dd>
+              </div>
+            </dl>
+          </section>
+        </section>
+
+        <section class="panel history-panel" aria-label="最近生成记录">
+          <div class="panel-heading">
+            <div>
+              <p class="section-kicker">History</p>
+              <h2>最近生成</h2>
+            </div>
+            <button id="clearHistoryBtn" class="text-btn" type="button">清空记录</button>
+          </div>
+          <div id="historyList" class="history-list">
+            <p class="history-empty">还没有生成记录。</p>
           </div>
         </section>
       </main>
     </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
     <script src="./vendor/qrcode.min.js"></script>
     <script src="./script.js"></script>
   </body>

@@ -2,6 +2,10 @@
 
 一个可直接部署的静态二维码产品工具：输入网址，生成可被手机扫码识别并跳转的二维码。页面支持样式自定义、PNG 下载、复制图片、复制链接、分享和最近生成记录。
 
+本项目完全免费。如果你觉得有帮助，欢迎给仓库点一个 Star：
+
+[https://github.com/wangmingxuan666/WarmingQRCode](https://github.com/wangmingxuan666/WarmingQRCode)
+
 线上地址：
 
 [https://wangmingxuan666.github.io/WarmingQRCode/](https://wangmingxuan666.github.io/WarmingQRCode/)

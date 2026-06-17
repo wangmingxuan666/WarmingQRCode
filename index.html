@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>网址二维码生成器</title>
+    <meta name="description" content="输入任意合法网址，快速生成可扫码跳转的二维码。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <main class="app">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">QR Link Generator</p>
+            <h1>网址二维码生成器</h1>
+            <p class="subtitle">输入任意合法网址，立即生成可扫码访问的二维码。适合分享网页、活动链接、产品页与个人主页。</p>
+          </div>
+        </section>
+        <section class="workspace" aria-label="二维码生成区域">
+          <div class="panel form-panel">
+            <label class="field-label" for="urlInput">网址链接</label>
+            <div class="input-group">
+              <input id="urlInput" name="url" type="url" inputmode="url" autocomplete="off" placeholder="请输入完整网址，例如 https://www.baidu.com" aria-describedby="helperText statusText" />
+              <button id="generateBtn" type="button">生成二维码</button>
+            </div>
+            <p id="helperText" class="helper-text">支持常见的 http / https 链接，建议输入完整网址。</p>
+            <p id="statusText" class="status-text" role="status" aria-live="polite"></p>
+            <div class="quick-actions" aria-label="快捷示例">
+              <button class="chip" type="button" data-url="https://www.baidu.com">百度</button>
+              <button class="chip" type="button" data-url="https://www.qq.com">QQ</button>
+              <button class="chip" type="button" data-url="https://github.com">GitHub</button>
+            </div>
+          </div>
+          <div class="panel preview-panel">
+            <div class="preview-header">
+              <h2>二维码预览</h2>
+              <button id="downloadBtn" class="ghost-btn" type="button" disabled>下载 PNG</button>
+            </div>
+            <div class="preview-card">
+              <div id="qrFrame" class="qr-frame empty">
+                <div id="qrContainer"></div>
+                <div id="emptyState" class="empty-state">
+                  <p>生成后会在这里显示二维码</p>
+                  <span>扫码即可直接打开对应网址</span>
+                </div>
+              </div>
+              <div class="result-meta">
+                <p class="meta-label">当前目标链接</p>
+                <a id="resultLink" class="result-link muted" href="#" target="_blank" rel="noreferrer noopener">暂未生成</a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="./vendor/qrcode.min.js"></script>
+    <script src="./script.js"></script>
+  </body>
+</html>

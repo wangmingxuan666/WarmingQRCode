@@ -518,7 +518,92 @@ function bindEvents() {
   });
 }
 
-loadSettings();
-syncControls();
-renderHistory();
-bindEvents();
+function renderLegacyQRCode() {
+  try {
+    if (typeof QRCode === 'undefined') {
+      throw new Error('二维码生成库加载失败，请刷新页面后重试。');
+    }
+
+    const url = normalizeUrl(els.urlInput.value);
+    currentUrl = url;
+    els.qrContainer.innerHTML = '';
+
+    new QRCode(els.qrContainer, {
+      text: url,
+      width: 280,
+      height: 280,
+      colorDark: '#111827',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+
+    els.qrFrame.classList.remove('empty');
+    els.qrFrame.classList.add('ready');
+    if (els.downloadBtn) els.downloadBtn.disabled = false;
+    els.resultLink.textContent = url;
+    els.resultLink.href = url;
+    els.resultLink.classList.remove('muted');
+    els.urlInput.value = url;
+    setStatus('二维码已生成，可以扫码访问。', 'success');
+  } catch (error) {
+    currentUrl = '';
+    if (els.qrContainer) els.qrContainer.innerHTML = '';
+    if (els.qrFrame) {
+      els.qrFrame.classList.remove('ready');
+      els.qrFrame.classList.add('empty');
+    }
+    if (els.downloadBtn) els.downloadBtn.disabled = true;
+    if (els.resultLink) {
+      els.resultLink.textContent = '暂未生成';
+      els.resultLink.href = '#';
+      els.resultLink.classList.add('muted');
+    }
+    setStatus(error.message || '生成失败，请检查输入后重试。', 'error');
+  }
+}
+
+function downloadLegacyQRCode() {
+  const canvas = els.qrContainer?.querySelector('canvas');
+  if (!canvas) return;
+  const link = document.createElement('a');
+  link.download = `warming-qr-${safeFileName(currentUrl || 'link')}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+function bindLegacyEvents() {
+  if (!els.urlInput || !els.generateBtn || !els.qrContainer || !els.qrFrame || !els.statusText || !els.resultLink) {
+    return;
+  }
+
+  els.generateBtn.addEventListener('click', renderLegacyQRCode);
+  els.downloadBtn?.addEventListener('click', downloadLegacyQRCode);
+  els.urlInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') renderLegacyQRCode();
+  });
+  els.urlInput.addEventListener('input', () => {
+    if (els.statusText.classList.contains('error')) setStatus('');
+    if (!els.urlInput.value.trim() && currentUrl) {
+      currentUrl = '';
+      els.qrContainer.innerHTML = '';
+      els.qrFrame.classList.remove('ready');
+      els.qrFrame.classList.add('empty');
+      if (els.downloadBtn) els.downloadBtn.disabled = true;
+    }
+  });
+  document.querySelectorAll('.chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      els.urlInput.value = chip.dataset.url || '';
+      renderLegacyQRCode();
+    });
+  });
+}
+
+if (els.generatorForm) {
+  loadSettings();
+  syncControls();
+  renderHistory();
+  bindEvents();
+} else {
+  bindLegacyEvents();
+}
